@@ -342,6 +342,143 @@ td select {
   font-weight: 600;
 }
 
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 18, 28, 0.34);
+  backdrop-filter: blur(2px);
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+}
+
+.loading-overlay__card {
+  min-width: 220px;
+  max-width: min(88vw, 360px);
+  border-radius: 12px;
+  border: 1px solid #d8dce3;
+  background: #ffffff;
+  display: grid;
+  place-items: center;
+  gap: 0.8rem;
+  padding: 1.1rem 1.2rem;
+  box-shadow: 0 12px 30px rgba(16, 24, 40, 0.18);
+}
+
+.loading-overlay__card p {
+  margin: 0;
+  color: #394150;
+  font-weight: 600;
+}
+
+.loading-overlay__spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 3px solid #dfe4f1;
+  border-top-color: #22306a;
+  animation: loading-spin 0.72s linear infinite;
+}
+
+.notification-viewport {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1010;
+  width: min(380px, calc(100vw - 2rem));
+  pointer-events: none;
+}
+
+.timed-notification {
+  pointer-events: auto;
+  border-radius: 12px;
+  border: 1px solid #d8dce3;
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(16, 24, 40, 0.18);
+  overflow: hidden;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.timed-notification.is-closing {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.timed-notification__content {
+  padding: 0.85rem 1rem 0.75rem;
+}
+
+.timed-notification__title {
+  margin: 0;
+  font-size: 0.94rem;
+  font-weight: 700;
+}
+
+.timed-notification__message {
+  margin: 0.26rem 0 0;
+  line-height: 1.45;
+  color: #394150;
+}
+
+.timed-notification__countdown {
+  height: 4px;
+  width: 100%;
+  transform-origin: left center;
+  animation-name: countdown-width;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+.timed-notification--info .timed-notification__title {
+  color: #1f4da2;
+}
+
+.timed-notification--info .timed-notification__countdown {
+  background: #4f8eea;
+}
+
+.timed-notification--success .timed-notification__title {
+  color: #14532d;
+}
+
+.timed-notification--success .timed-notification__countdown {
+  background: #2f9f62;
+}
+
+.timed-notification--warning .timed-notification__title {
+  color: #92400e;
+}
+
+.timed-notification--warning .timed-notification__countdown {
+  background: #dd8a21;
+}
+
+.timed-notification--error .timed-notification__title {
+  color: #991b1b;
+}
+
+.timed-notification--error .timed-notification__countdown {
+  background: #d63d3d;
+}
+
+@keyframes loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes countdown-width {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}
+
 @media (max-width: 900px) {
   .dashboard-shell {
     grid-template-columns: 1fr;
@@ -371,6 +508,12 @@ td select {
 }
 
 @media (max-width: 640px) {
+  .notification-viewport {
+    top: 0.75rem;
+    right: 0.75rem;
+    width: calc(100vw - 1.5rem);
+  }
+
   .dashboard-topbar {
     flex-direction: column;
     align-items: flex-start;

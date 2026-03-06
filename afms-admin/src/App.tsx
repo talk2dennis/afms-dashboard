@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
+import { UiFeedbackProvider } from './context/UiFeedbackContext'
 import DashboardLayout from './pages/dashboard/DashboardLayout'
 import AlertsPage from './pages/dashboard/AlertsPage'
 import NotificationsPage from './pages/dashboard/NotificationsPage'
@@ -12,36 +13,38 @@ import './App.css'
 
 function App () {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path='/'
-            element={<Navigate to='/dashboard/overview' replace />}
-          />
-          <Route path='/login' element={<LoginPage />} />
-          <Route
-            path='/dashboard'
-            element={
-              <ProtectedRoute>
-                <DashboardLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<Navigate to='overview' replace />} />
-            <Route path='overview' element={<OverviewPage />} />
-            <Route path='users' element={<UsersPage />} />
-            <Route path='reports' element={<ReportsPage />} />
-            <Route path='alerts' element={<AlertsPage />} />
-            <Route path='notifications' element={<NotificationsPage />} />
-          </Route>
-          <Route
-            path='*'
-            element={<Navigate to='/dashboard/overview' replace />}
-          />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+    <UiFeedbackProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path='/'
+              element={<Navigate to='/dashboard/overview' replace />}
+            />
+            <Route path='/login' element={<LoginPage />} />
+            <Route
+              path='/dashboard'
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<Navigate to='overview' replace />} />
+              <Route path='overview' element={<OverviewPage />} />
+              <Route path='users' element={<UsersPage />} />
+              <Route path='reports' element={<ReportsPage />} />
+              <Route path='alerts' element={<AlertsPage />} />
+              <Route path='notifications' element={<NotificationsPage />} />
+            </Route>
+            <Route
+              path='*'
+              element={<Navigate to='/dashboard/overview' replace />}
+            />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </UiFeedbackProvider>
   )
 }
 

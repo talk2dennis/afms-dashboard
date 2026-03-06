@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 const navigationItems = [
   { path: '/dashboard/overview', label: 'Overview' },
-  { path: '/dashboard/users', label: 'Manage Residents' },
+  { path: '/dashboard/users', label: 'Manage Users' },
   { path: '/dashboard/reports', label: 'Flood Reports' },
   { path: '/dashboard/alerts', label: 'Flood Alerts' },
   { path: '/dashboard/notifications', label: 'Emergency Notifications' }
@@ -12,7 +12,7 @@ const navigationItems = [
 
 const pageTitles: Record<string, string> = {
   '/dashboard/overview': 'Overview',
-  '/dashboard/users': 'Manage Residents',
+  '/dashboard/users': 'Manage Users',
   '/dashboard/reports': 'Flood Reports',
   '/dashboard/alerts': 'Flood Alerts',
   '/dashboard/notifications': 'Emergency Notifications'
@@ -26,7 +26,7 @@ function DashboardLayout () {
 
   const pageTitle = pageTitles[location.pathname] ?? 'Overview'
   const displayName = currentUserData?.name ?? currentUserData?.email ?? 'User'
-  const firstName = displayName.split(' ')[0]
+  const firstName = displayName.split(' ')[1] ?? displayName
   const avatarInitial = firstName.charAt(0).toUpperCase()
 
   const handleLogout = () => {
@@ -37,7 +37,7 @@ function DashboardLayout () {
   return (
     <main className='dashboard-shell'>
       <aside className='dashboard-sidebar' aria-label='Primary navigation'>
-        <h2>Flood Admin</h2>
+        <h2>AFMS Admin</h2>
         <nav>
           {navigationItems.map(item => (
             <NavLink

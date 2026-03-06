@@ -1,19 +1,20 @@
-type user = {
-  id?: string
+export type UserResponse = {
+  _id: string
   email: string
-  name?: string
-  role?: string
-  gsm?: string
-  createdAt?: string
-  updatedAt?: string
-  location?: [number, number]
-  state?: string
-  lga?: string
+  name: string
+  phone: string
+  role: string
+  status?: string
+  createdAt: string
+  updatedAt: string
+  location: [number, number] | string | null
+  state: string
+  lga: string
 }
 
 export type LoginResponse = {
   token: string
-  user: user
+  user: UserResponse
 }
 
 export type ReportResponse = {
@@ -27,5 +28,11 @@ export type ReportResponse = {
   updatedAt: string
   severity: 'LOW' | 'MEDIUM' | 'HIGH'
   location: [number, number]
-  user: user
+  user: UserResponse
+}
+
+export type StatisticsResponse = {
+  users: number
+  floodReports: number
+  alerts: number
 }
