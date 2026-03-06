@@ -1,31 +1,49 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import TablePage from './TablePage'
-import { reports, type Report } from './data'
+import { type ReportResponse } from '../../api/authApi'
+import apiClient from '../../api/client'
 
 function ReportsPage () {
+  const [reports, setReports] = useState<ReportResponse[]>([])
   const [reportSearch, setReportSearch] = useState('')
-  const [reportTypeFilter, setReportTypeFilter] = useState<
-    'All' | Report['type']
-  >('All')
   const [reportStatusFilter, setReportStatusFilter] = useState<
-    'All' | Report['status']
+    'All' | ReportResponse['status']
   >('All')
+  const [reportStateFilter, setReportStateFilter] = useState<
+    'All' | ReportResponse['state']
+  >('All')
+
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const response = await apiClient.get<ReportResponse[]>('reports/')
+        console.log('Fetched reports:', response.data)
+        setReports(response.data)
+      } catch (error) {
+        console.error('Failed to fetch reports', error)
+      }
+    }
+
+    void fetchReports()
+  }, [])
 
   const filteredReports = useMemo(
     () =>
       reports.filter(report => {
-        const searchValue = reportSearch.toLowerCase()
+        const searchValue = reportSearch?.toLowerCase()
         const matchesSearch =
-          report.id.toLowerCase().includes(searchValue) ||
-          report.reporter.toLowerCase().includes(searchValue) ||
-          report.location.toLowerCase().includes(searchValue)
-        const matchesType =
-          reportTypeFilter === 'All' || report.type === reportTypeFilter
+          report._id.toLowerCase().includes(searchValue) ||
+          report.state.toLowerCase().includes(searchValue) ||
+          report.title.toLowerCase().includes(searchValue) ||
+          report.user.name?.toLowerCase().includes(searchValue) ||
+          report.lga.toLowerCase().includes(searchValue)
         const matchesStatus =
           reportStatusFilter === 'All' || report.status === reportStatusFilter
-        return matchesSearch && matchesType && matchesStatus
+        const matchesState =
+          reportStateFilter === 'All' || report.state === reportStateFilter
+        return matchesSearch && matchesStatus && matchesState
       }),
-    [reportSearch, reportTypeFilter, reportStatusFilter]
+    [reports, reportSearch, reportStatusFilter, reportStateFilter]
   )
 
   return (
@@ -40,28 +58,34 @@ function ReportsPage () {
             onChange={event => setReportSearch(event.target.value)}
           />
           <select
-            value={reportTypeFilter}
+            value={reportStateFilter}
             onChange={event =>
-              setReportTypeFilter(event.target.value as 'All' | Report['type'])
+              setReportStateFilter(
+                event.target.value as 'All' | ReportResponse['state']
+              )
             }
           >
-            <option value='All'>All Types</option>
-            <option value='Street Flooding'>Street Flooding</option>
-            <option value='Drain Blockage'>Drain Blockage</option>
-            <option value='River Overflow'>River Overflow</option>
+            <option value='All'>All States</option>
+            {Array.from(new Set(reports.map(report => report.state))).map(
+              state => (
+                <option key={state} value={state}>
+                  {state}
+                </option>
+              )
+            )}
           </select>
           <select
             value={reportStatusFilter}
             onChange={event =>
               setReportStatusFilter(
-                event.target.value as 'All' | Report['status']
+                event.target.value as 'All' | ReportResponse['status']
               )
             }
           >
             <option value='All'>All Status</option>
-            <option value='Pending Approval'>Pending Approval</option>
-            <option value='Approved'>Approved</option>
-            <option value='Rejected'>Rejected</option>
+            <option value='PENDING'>Pending</option>
+            <option value='APPROVED'>Approved</option>
+            <option value='REJECTED'>Rejected</option>
           </select>
         </>
       }
@@ -69,21 +93,23 @@ function ReportsPage () {
         <table>
           <thead>
             <tr>
-              <th>Report ID</th>
+              <th>S/No.</th>
+              <th>Title</th>
               <th>Reporter</th>
               <th>Location</th>
-              <th>Type</th>
+              <th>Severity</th>
               <th>Status</th>
               <th>Manage</th>
             </tr>
           </thead>
           <tbody>
-            {filteredReports.map(report => (
-              <tr key={report.id}>
-                <td>{report.id}</td>
-                <td>{report.reporter}</td>
-                <td>{report.location}</td>
-                <td>{report.type}</td>
+            {filteredReports.map((report, index) => (
+              <tr key={report._id}>
+                <td>{index + 1}</td>
+                <td>{report.title}</td>
+                <td>{report.user.name ?? 'Unknown'}</td>
+                <td>{`${report.lga}, ${report.state}`}</td>
+                <td>{report.severity}</td>
                 <td>{report.status}</td>
                 <td>
                   <select defaultValue=''>
