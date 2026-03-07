@@ -54,6 +54,72 @@ function AlertsPage () {
     fetchAlerts()
   }, [notify, withLoading])
 
+  // send alert
+  const handleSendReport = async (alertid: string, alertTitle: string) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to send Alert: "${alertTitle}"?\n\nThis action cannot be undone.`
+    )
+
+    if (!confirmed) {
+      return
+    }
+
+    try {
+      await withLoading(
+        async () => apiClient.post(`alerts/${alertid}/send`),
+        'Sending alert...'
+      )
+
+      notify({
+        tone: 'success',
+        title: 'Alert sent',
+        message: `Alert "${alertTitle}" has been removed.`
+      })
+
+      await fetchAlerts()
+    } catch (error) {
+      console.error('Failed to send alert', error)
+      notify({
+        tone: 'error',
+        title: 'send failed',
+        message: 'Unable to send alert at this time.'
+      })
+    }
+  }
+
+  // delete alert
+  const handleDeleteReport = async (alertid: string, alertTitle: string) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete Alert: "${alertTitle}"?\n\nThis action cannot be undone.`
+    )
+
+    if (!confirmed) {
+      return
+    }
+
+    try {
+      await withLoading(
+        async () => apiClient.delete(`alerts/${alertid}`),
+        'Deleting alert...'
+      )
+
+      notify({
+        tone: 'success',
+        title: 'Alert deleted',
+        message: `Alert "${alertTitle}" has been removed.`
+      })
+
+      await fetchAlerts()
+    } catch (error) {
+      console.error('Failed to delete alert', error)
+      notify({
+        tone: 'error',
+        title: 'Delete failed',
+        message: 'Unable to delete alert at this time.'
+      })
+    }
+  }
+
   return (
     <TablePage
       title='Flood Alerts'
@@ -121,14 +187,26 @@ function AlertsPage () {
                 </td>
                 <td>{alert.status}</td>
                 <td>
-                  <select defaultValue=''>
+                  <select
+                    defaultValue=''
+                    onChange={event => {
+                      const action = event.target.value
+                      event.target.value = ''
+
+                      if (action === 'send-alert') {
+                        void handleSendReport(alert._id, alert.title)
+                      } else if (action === 'delete-alert') {
+                        void handleSendReport(alert._id, alert.title)
+                      }
+                    }}
+                  >
                     <option value='' disabled>
                       Select action
                     </option>
-                    <option>Edit flood alert</option>
-                    <option>Create alert</option>
-                    <option>Publish now</option>
-                    <option>Delete alert</option>
+                    <option value='edit-alert'>Edit flood alert</option>
+                    <option value='create-alert'>Create alert</option>
+                    <option value='send-alert'>Send Alert</option>
+                    <option value='delete-alert'>Delete alert</option>
                   </select>
                 </td>
               </tr>

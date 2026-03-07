@@ -38,6 +38,7 @@ export type StatisticsResponse = {
 }
 
 export type alertResponse = {
+  _id: string
   title: string
   message: string
   severity: 'INFO' | 'WARNING' | 'CRITICAL'
