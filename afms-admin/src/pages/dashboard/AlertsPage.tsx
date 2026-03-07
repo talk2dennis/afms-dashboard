@@ -55,7 +55,7 @@ function AlertsPage () {
   }, [notify, withLoading])
 
   // send alert
-  const handleSendReport = async (alertid: string, alertTitle: string) => {
+  const handleSendAlert = async (alertid: string, alertTitle: string) => {
     const confirmed = window.confirm(
       `Are you sure you want to send Alert: "${alertTitle}"?\n\nThis action cannot be undone.`
     )
@@ -88,7 +88,7 @@ function AlertsPage () {
   }
 
   // delete alert
-  const handleDeleteReport = async (alertid: string, alertTitle: string) => {
+  const handleDeleteAlert = async (alertid: string, alertTitle: string) => {
     const confirmed = window.confirm(
       `Are you sure you want to delete Alert: "${alertTitle}"?\n\nThis action cannot be undone.`
     )
@@ -194,9 +194,9 @@ function AlertsPage () {
                       event.target.value = ''
 
                       if (action === 'send-alert') {
-                        void handleSendReport(alert._id, alert.title)
+                        void handleSendAlert(alert._id, alert.title)
                       } else if (action === 'delete-alert') {
-                        void handleSendReport(alert._id, alert.title)
+                        void handleDeleteAlert(alert._id, alert.title)
                       }
                     }}
                   >
