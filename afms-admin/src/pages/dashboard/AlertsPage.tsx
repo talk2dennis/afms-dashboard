@@ -1,14 +1,18 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import TablePage from './TablePage'
-import { alerts, type Alert } from './data'
+import { type alertResponse } from '../../api/authApi'
+import { useUiFeedback } from '../../context/UiFeedbackContext'
+import apiClient from '../../api/client'
 
 function AlertsPage () {
+  const { withLoading, notify } = useUiFeedback()
+  const [alerts, setAlerts] = useState<alertResponse[]>([])
   const [alertSearch, setAlertSearch] = useState('')
   const [alertSeverityFilter, setAlertSeverityFilter] = useState<
-    'All' | Alert['severity']
+    'All' | alertResponse['severity']
   >('All')
   const [alertStatusFilter, setAlertStatusFilter] = useState<
-    'All' | Alert['status']
+    'All' | alertResponse['status']
   >('All')
 
   const filteredAlerts = useMemo(
@@ -16,8 +20,10 @@ function AlertsPage () {
       alerts.filter(alert => {
         const searchValue = alertSearch.toLowerCase()
         const matchesSearch =
-          alert.id.toLowerCase().includes(searchValue) ||
-          alert.title.toLowerCase().includes(searchValue)
+          alert.message.toLowerCase().includes(searchValue) ||
+          alert.title.toLowerCase().includes(searchValue) ||
+          alert.target.state.toLowerCase().includes(searchValue) ||
+          alert.target.lga.toLowerCase().includes(searchValue)
         const matchesSeverity =
           alertSeverityFilter === 'All' ||
           alert.severity === alertSeverityFilter
@@ -27,6 +33,26 @@ function AlertsPage () {
       }),
     [alertSearch, alertSeverityFilter, alertStatusFilter]
   )
+
+  // fetch data from backend
+  const fetchAlerts = async () => {
+    try {
+      const response = await withLoading(
+        async () => apiClient.get<alertResponse[]>('alerts/'),
+        'Fetching flood alerts...'
+      )
+      setAlerts(response.data)
+    } catch (error) {
+      console.error('Failed to fetch reports', error)
+      notify({
+        message: 'Failed to fetch reports',
+        tone: 'error'
+      })
+    }
+  }
+  useEffect(() => {
+    fetchAlerts()
+  }, [notify, withLoading])
 
   return (
     <TablePage
@@ -43,7 +69,7 @@ function AlertsPage () {
             value={alertSeverityFilter}
             onChange={event =>
               setAlertSeverityFilter(
-                event.target.value as 'All' | Alert['severity']
+                event.target.value as 'All' | alertResponse['severity']
               )
             }
           >
@@ -56,7 +82,7 @@ function AlertsPage () {
             value={alertStatusFilter}
             onChange={event =>
               setAlertStatusFilter(
-                event.target.value as 'All' | Alert['status']
+                event.target.value as 'All' | alertResponse['status']
               )
             }
           >
@@ -71,21 +97,28 @@ function AlertsPage () {
         <table>
           <thead>
             <tr>
-              <th>Alert ID</th>
+              <th>S/No</th>
               <th>Title</th>
+              <th>State</th>
+              <th>LGA</th>
               <th>Severity</th>
-              <th>Audience</th>
+              <th>Channel</th>
               <th>Status</th>
               <th>Manage</th>
             </tr>
           </thead>
           <tbody>
-            {filteredAlerts.map(alert => (
-              <tr key={alert.id}>
-                <td>{alert.id}</td>
+            {filteredAlerts.map((alert, index) => (
+              <tr key={index + 1}>
                 <td>{alert.title}</td>
+                <td>{alert.target.state}</td>
+                <td>{alert.target.lga}</td>
                 <td>{alert.severity}</td>
-                <td>{alert.audience}</td>
+                <td>
+                  <td>{alert.channels.email ? 'EMAIL' : 'N/A'}</td>
+                  <td>{alert.channels.sms ? 'SMS' : 'N/A'}</td>
+                  <td>{alert.channels.push ? 'PUSH' : 'N/A'}</td>
+                </td>
                 <td>{alert.status}</td>
                 <td>
                   <select defaultValue=''>
@@ -93,7 +126,7 @@ function AlertsPage () {
                       Select action
                     </option>
                     <option>Edit flood alert</option>
-                    <option>Schedule alert</option>
+                    <option>Create alert</option>
                     <option>Publish now</option>
                     <option>Delete alert</option>
                   </select>

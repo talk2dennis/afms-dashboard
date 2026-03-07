@@ -36,3 +36,13 @@ export type StatisticsResponse = {
   floodReports: number
   alerts: number
 }
+
+export type alertResponse = {
+  title: string
+  message: string
+  severity: 'INFO' | 'WARNING' | 'CRITICAL'
+  target: { state: string; lga: string }
+  channels: { email: boolean; sms: boolean; push: boolean }
+  status: 'DRAFT' | 'SENT'
+  user: { email: string; name: string; phone: string }
+}

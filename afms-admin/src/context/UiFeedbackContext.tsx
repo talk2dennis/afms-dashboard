@@ -37,7 +37,7 @@ type UiFeedbackContextValue = {
 }
 
 const DEFAULT_LOADING_MESSAGE = 'Please wait...'
-const DEFAULT_NOTIFICATION_DURATION = 4800
+const DEFAULT_NOTIFICATION_DURATION = 1000
 const FADE_OUT_DURATION = 500
 
 const UiFeedbackContext = createContext<UiFeedbackContextValue | null>(null)
