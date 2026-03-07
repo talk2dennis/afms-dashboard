@@ -252,6 +252,129 @@
   font: inherit;
 }
 
+.filter-bar button {
+  border: 1px solid #d8dce3;
+  border-radius: 8px;
+  padding: 0.7rem 0.8rem;
+  background: #fff;
+  font: inherit;
+  font-weight: 600;
+}
+
+.alert-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 18, 28, 0.44);
+  backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 1100;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.alert-modal {
+  width: min(100%, 560px);
+  border: 1px solid #d8dce3;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 14px 34px rgba(16, 24, 40, 0.2);
+  padding: 1rem;
+  margin: 0.6rem 0;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+
+.alert-modal h3 {
+  margin: 0 0 0.85rem;
+}
+
+.alert-modal form {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.alert-modal label,
+.alert-modal legend {
+  font-weight: 600;
+  color: #394150;
+}
+
+.alert-modal input,
+.alert-modal select,
+.alert-modal textarea {
+  border: 1px solid #d8dce3;
+  border-radius: 8px;
+  padding: 0.7rem 0.8rem;
+  font: inherit;
+  background: #fff;
+}
+
+.alert-modal textarea {
+  resize: vertical;
+}
+
+.field-help-text {
+  color: #5f6470;
+  font-size: 0.83rem;
+  line-height: 1.35;
+}
+
+.alert-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.alert-modal-grid > div {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.alert-modal-channels {
+  margin: 0;
+  border: 1px solid #e7eaf0;
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.alert-modal-channels label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 500;
+}
+
+.alert-modal-channels input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+}
+
+.alert-modal-actions {
+  margin-top: 0.35rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.55rem;
+}
+
+.alert-modal-actions button {
+  border: 1px solid #d8dce3;
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  font-weight: 600;
+  padding: 0.58rem 0.9rem;
+}
+
+@media (max-width: 720px) {
+  .alert-modal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .table-wrap {
   width: 100%;
   overflow-x: auto;
