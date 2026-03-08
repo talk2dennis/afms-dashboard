@@ -51,6 +51,17 @@
   font-weight: 600;
 }
 
+.login-form .login-reset-link {
+  margin-top: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #22306a;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
 .login-error {
   margin: 0.2rem 0 0;
   color: #b42318;
@@ -60,6 +71,11 @@
 .login-hint {
   margin-top: 0.8rem;
   font-size: 0.9rem;
+}
+
+.login-hint a {
+  color: #22306a;
+  font-weight: 600;
 }
 
 .dashboard-shell {

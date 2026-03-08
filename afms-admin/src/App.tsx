@@ -9,6 +9,7 @@ import OverviewPage from './pages/dashboard/OverviewPage'
 import ReportsPage from './pages/dashboard/ReportsPage'
 import UsersPage from './pages/dashboard/UsersPage'
 import LoginPage from './pages/LoginPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
 import './App.css'
 
 function App () {
@@ -22,6 +23,10 @@ function App () {
               element={<Navigate to='/dashboard/overview' replace />}
             />
             <Route path='/login' element={<LoginPage />} />
+            <Route
+              path='/auth/reset-password/:token'
+              element={<ResetPasswordPage />}
+            />
             <Route
               path='/dashboard'
               element={

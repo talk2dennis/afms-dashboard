@@ -18,6 +18,16 @@ function LoginPage () {
     return <Navigate to='/dashboard' replace />
   }
 
+  const handleOpenResetPassword = () => {
+    const token = window.prompt('Paste your password reset token')?.trim()
+
+    if (!token) {
+      return
+    }
+
+    navigate(`/auth/reset-password/${encodeURIComponent(token)}`)
+  }
+
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const emailValue = loginEmail.trim().toLowerCase()
@@ -89,6 +99,14 @@ function LoginPage () {
             placeholder='Enter password'
             required
           />
+
+          <button
+            type='button'
+            className='login-reset-link'
+            onClick={handleOpenResetPassword}
+          >
+            Reset password with token
+          </button>
 
           {loginError ? <p className='login-error'>{loginError}</p> : null}
 
