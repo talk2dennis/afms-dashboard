@@ -24,6 +24,10 @@ function App () {
             />
             <Route path='/login' element={<LoginPage />} />
             <Route
+              path='/reset-password/:token'
+              element={<ResetPasswordPage />}
+            />
+            <Route
               path='/auth/reset-password/:token'
               element={<ResetPasswordPage />}
             />

@@ -13,19 +13,37 @@ function LoginPage () {
   const [loginPassword, setLoginPassword] = useState('')
   const [loginError, setLoginError] = useState('')
   const [isLoggingIn, setIsLoggingIn] = useState(false)
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false)
+  const [resetTokenInput, setResetTokenInput] = useState('')
+  const [resetTokenError, setResetTokenError] = useState('')
 
   if (isAuthenticated) {
     return <Navigate to='/dashboard' replace />
   }
 
   const handleOpenResetPassword = () => {
-    const token = window.prompt('Paste your password reset token')?.trim()
+    setResetTokenInput('')
+    setResetTokenError('')
+    setIsResetModalOpen(true)
+  }
 
-    if (!token) {
+  const handleCloseResetModal = () => {
+    setIsResetModalOpen(false)
+    setResetTokenInput('')
+    setResetTokenError('')
+  }
+
+  const handleContinueToResetPassword = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const tokenValue = resetTokenInput.trim()
+
+    if (tokenValue.length === 0) {
+      setResetTokenError('Please enter your reset token.')
       return
     }
 
-    navigate(`/auth/reset-password/${encodeURIComponent(token)}`)
+    handleCloseResetModal()
+    navigate(`/reset-password/${encodeURIComponent(tokenValue)}`)
   }
 
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
@@ -117,6 +135,52 @@ function LoginPage () {
 
         <p className='login-hint'>Use your admin credentials to continue.</p>
       </section>
+
+      {isResetModalOpen ? (
+        <div
+          className='alert-modal-overlay'
+          role='presentation'
+          onClick={handleCloseResetModal}
+        >
+          <section
+            className='alert-modal'
+            role='dialog'
+            aria-modal='true'
+            aria-label='Enter reset token'
+            onClick={event => event.stopPropagation()}
+          >
+            <h3>Reset password</h3>
+            <form onSubmit={handleContinueToResetPassword}>
+              <label htmlFor='reset-token'>Reset token</label>
+              <input
+                id='reset-token'
+                type='text'
+                value={resetTokenInput}
+                onChange={event => {
+                  setResetTokenInput(event.target.value)
+                  if (resetTokenError) {
+                    setResetTokenError('')
+                  }
+                }}
+                placeholder='Paste token from reset link email'
+                autoComplete='off'
+                required
+              />
+
+              {resetTokenError ? (
+                <p className='login-error'>{resetTokenError}</p>
+              ) : null}
+
+              <div className='alert-modal-actions'>
+                <button type='button' onClick={handleCloseResetModal}>
+                  Cancel
+                </button>
+                <button type='submit'>Continue</button>
+              </div>
+            </form>
+          </section>
+        </div>
+      ) : null}
     </main>
   )
 }
